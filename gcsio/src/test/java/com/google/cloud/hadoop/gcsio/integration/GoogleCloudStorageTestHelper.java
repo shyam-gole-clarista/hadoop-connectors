@@ -69,6 +69,8 @@ import java.util.stream.Collectors;
 public class GoogleCloudStorageTestHelper {
   private static final GoogleLogger logger = GoogleLogger.forEnclosingClass();
 
+  private static final String BUCKET_PREFIX_CLEANUP_BLOCKLIST = "dataproc-gcs-gcsio_arunchac";
+
   // Application name for OAuth.
   public static final String APP_NAME = "GHFS/test";
 
@@ -368,7 +370,8 @@ public class GoogleCloudStorageTestHelper {
         String bucketName = bucketInfo.getBucketName();
         if (bucketName.startsWith(bucketPrefix)
             && (bucketName.startsWith(uniqueBucketPrefix)
-                || bucketInfo.getCreationTime() < LEAKED_BUCKETS_CUTOFF_TIME)) {
+                || (bucketInfo.getCreationTime() < LEAKED_BUCKETS_CUTOFF_TIME)
+                    && !(bucketName.startsWith(BUCKET_PREFIX_CLEANUP_BLOCKLIST)))) {
           bucketsToDelete.add(bucketName);
         }
       }
